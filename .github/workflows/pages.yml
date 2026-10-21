@@ -1,0 +1,43 @@
+name: Publish Artcolor preview
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Restore verified website package
+        shell: bash
+        run: |
+          cat site.zip.0?? > site.zip
+          echo 'e5ece84bde23aa622b9161decb84ec2173a11583f5dfaac5df2df358b4f216df  site.zip' | sha256sum --check
+          mkdir _site
+          unzip -q site.zip -d _site
+          test -s _site/index.html
+          test "$(find _site -maxdepth 1 -type f | wc -l)" -eq 781
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Publish website
+        id: deployment
+        uses: actions/deploy-pages@v4
