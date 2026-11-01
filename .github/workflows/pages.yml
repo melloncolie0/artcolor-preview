@@ -34,6 +34,10 @@ jobs:
           test -s _site/index.html
           test -s _site/private/index.html
           test "$(find _site -type f | wc -l)" -eq 1522
+          echo '182abf47368288d782f0e18ef050cb0ff6a1e5341b81fe14d9a0897ff5d63cc7  update-nov01.zip' | sha256sum --check
+          unzip -qo update-nov01.zip -d _site
+          grep -q 'header-call' _site/index.html
+          grep -q 'plus-nov01-r1' _site/app.js
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload website
