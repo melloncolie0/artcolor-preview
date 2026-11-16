@@ -38,6 +38,10 @@ jobs:
           unzip -qo update-nov01.zip -d _site
           grep -q 'header-call' _site/index.html
           grep -q 'plus-nov01-r1' _site/app.js
+          echo 'db9e2949bfc32f918d2648ea94efc3b3ce9a35d01683df848dab2e23a8339867  catalog-nov16.tar.xz' | sha256sum --check
+          tar -xJf catalog-nov16.tar.xz -C _site
+          grep -q 'mailto:artcolor36vrn@mail.ru' _site/contacts/index.html
+          grep -q 'catalog-nov16-r1' _site/app.js
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload website
